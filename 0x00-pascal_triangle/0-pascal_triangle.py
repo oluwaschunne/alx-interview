@@ -6,8 +6,6 @@ Pascal_Triangle
 
 """
 
-pascal_triangle = __import__('0-pascal_triangle').pascal_triangle
-
 
 def pascal_triangle(n):
     if n <= 0:
@@ -23,6 +21,3 @@ def pascal_triangle(n):
         triangle.append(row)
 
     return triangle
-
-if __name__ == "__main__":
-    pascal_triangle(n)
