@@ -1,29 +1,27 @@
 #!/usr/bin/node
-import request from "request";
-import { promisify } from "util";
-const movieId = process.argv[2];
-if (!movieId || isNaN(movieId)) {
-  console.error("Usage: ./0-starwars_characters.js <movie_id>");
-  process.exit(1);
-}
-const url = `https://swapi-api.alx-tools.com/api/films/${movieId}`;
-const asyncRequest = promisify(request);
 
-async function print_characters(urls) {
-  for (const urlt of urls) {
-    const val = await asyncRequest({ url: urlt, json: true });
+/**
+ * Fetches and prints the names of the characters in a Star Wars film.
+ * @param {number} filmId - The ID of the Star Wars film.
+ */
+const request = require('request');
 
-    console.log(val.body.name);
-  }
-}
+request('https://swapi-api.hbtn.io/api/films/' + process.argv[2], function (err, res, body) {
+  if (err) throw err;
+  const actors = JSON.parse(body).characters;
+  exactOrder(actors, 0);
+});
 
-async function get_stuff() {
-  const val = await asyncRequest({ url: url, json: true });
-  if (val.statusCode === 200) {
-    await print_characters(val.body.characters);
-  }
-
-  console.error("Invalid response:", val.statusCode);
-  process.exit(1);
-}
-get_stuff();
+/**
+ * Recursively fetches and prints the names of the characters in the exact order.
+ * @param {string[]} actors - The URLs of the characters.
+ * @param {number} x - The index of the current character.
+ */
+const exactOrder = (actors, x) => {
+  if (x === actors.length) return;
+  request(actors[x], function (err, res, body) {
+    if (err) throw err;
+    console.log(JSON.parse(body).name);
+    exactOrder(actors, x + 1);
+  });
+};
